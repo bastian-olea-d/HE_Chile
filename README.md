@@ -1,5 +1,5 @@
-# HE_Chile
 Influences on the access to higher education: Visualization and modeling for Chilean data
+
 
 1. Las 2 bases de datos utilizadas se encuentran en el siguiente link: 
 https://drive.google.com/drive/folders/1xejjXbdxpwZLbhzP9qNoVQehZs5Vdhnc?usp=sharing
