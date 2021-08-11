@@ -7,5 +7,5 @@ https://drive.google.com/drive/folders/1xejjXbdxpwZLbhzP9qNoVQehZs5Vdhnc?usp=sha
 
 2. In **Paper_Higher_Education.Rmd** file you will find all the code used in the investigation. 
 
-3. Figures are identified with the same number as in the article and the last chunk corresponds to the results of the multinomial logit
+3. Figures are identified with the same number as in the article and the last chunk corresponds to the results of the multinomial logit.
 
