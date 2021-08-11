@@ -1,4 +1,4 @@
-#Influences on the access to higher education: Visualization and modeling for Chilean data
+# Influences on the access to higher education: Visualization and modeling for Chilean data
 
 
 1. Las 2 bases de datos utilizadas se encuentran en el siguiente link: 
