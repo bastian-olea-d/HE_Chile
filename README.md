@@ -11,6 +11,7 @@ https://drive.google.com/drive/folders/1xejjXbdxpwZLbhzP9qNoVQehZs5Vdhnc?usp=sha
 
 
 4. Variables in Table 2 of the article have the following names in the BASE_PAPER.rds database:
+
             Enrolled = MATRICULADO
             ID = MRUN
             AdmProc = AGNO_EGRESO + 1
