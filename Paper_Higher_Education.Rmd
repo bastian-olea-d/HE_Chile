@@ -155,15 +155,15 @@ Fig_5 = ggplot(final, aes(x=AGNO_EGRESO, y=Tasa, group=factor(COD_DEPE2))) +
         axis.text.x = element_text(size=14, angle=90), axis.title.y.right = element_blank(), 
         legend.position = "top") + 
   geom_vline(xintercept = 2015.8, linetype="dashed") + 
-  annotate(geom = "text", x = 2015.6, y = 20, label = "Gratuidad", color = "black", angle = 90) + 
+  annotate(geom = "text", x = 2015.6, y = 15, label = "Tuition-Free Higher Education", size = 3, color = "black", angle = 90) + 
   geom_vline(xintercept = 2011.8, linetype="dashed") +
-  annotate(geom = "text", x = 2011.6, y = 20, label = "St.Movement", color = "black", angle = 90) + 
+  annotate(geom = "text", x = 2011.6, y = 15, label = "Student Movement", size = 3, color = "black", angle = 90) + 
   geom_vline(xintercept = 2009.8, linetype="dashed") + 
-  annotate(geom = "text", x = 2009.6, y = 20, label = "LGE", color = "black", angle = 90) + 
+  annotate(geom = "text", x = 2009.6, y = 15, label = "General Education Law", size = 3, color = "black", angle = 90) + 
   geom_vline(xintercept = 2006.8) + 
   geom_vline(xintercept = 2019.8, linetype="dashed") + 
-  annotate(geom = "text", x = 2019.6, y = 20, label = "Soc.Outbreak", color = "black", angle = 90) + 
-  geom_text(aes(label = Porc), vjust= -0.9, hjust = 0, size = 4, color="black", check_overlap = TRUE, nudge_y = 0.5) +
+  annotate(geom = "text", x = 2019.6, y = 15, label = "Social Outbreak", size = 3, color = "black", angle = 90) + 
+  geom_text(aes(label = Porc), vjust= -0.9, hjust = 0, size = 3, color="black", check_overlap = TRUE, nudge_y = 0.5) +
     scale_shape_manual(values = c('Public'=15, 'Semi-Private'=17, 'Private'=16))
 
 Fig_5
@@ -198,14 +198,14 @@ Fig_2 = ggplot(final, aes(x=AGNO_EGRESO, y=Total_Egresados, group=factor(COD_DEP
         axis.title.y = element_text(size=18, angle=90), axis.text.x = element_text(size=14, angle=90),
         legend.position = "top") +
   geom_vline(xintercept = 2015.8, linetype="dashed") + 
-  annotate(geom = "text", x = 2015.6, y = 40000, label = "Gratuidad", color = "black", angle = 90) + 
+  annotate(geom = "text", x = 2015.6, y = 42000, size = 3, label = "Tuition-Free Higher Education", color = "black", angle = 90) + 
   geom_vline(xintercept = 2011.8, linetype="dashed") + 
-  annotate(geom = "text", x = 2011.6, y = 40000, label = "St.Movement", color = "black", angle = 90) + 
+  annotate(geom = "text", x = 2011.6, y = 42000, size = 3, label = "Student Movement", color = "black", angle = 90) + 
   geom_vline(xintercept = 2009.8, linetype="dashed") + 
-  annotate(geom = "text", x = 2009.6, y = 40000, label = "LGE", color = "black", angle = 90) + 
+  annotate(geom = "text", x = 2009.6, y = 42000, size = 3, label = "General Education Law", color = "black", angle = 90) + 
   geom_vline(xintercept = 2006.8, linetype="dashed") + 
   geom_vline(xintercept = 2019.8, linetype="dashed") + 
-  annotate(geom = "text", x = 2019.6, y = 40000, label = "Soc.Outbreak", color = "black", angle = 90) + 
+  annotate(geom = "text", x = 2019.6, y = 42000, size = 3, label = "Social Outbreak", color = "black", angle = 90) + 
   geom_text(aes(label = Porc), vjust= -0.9, hjust = 0, size = 4, color="black", check_overlap = TRUE, nudge_y = 0.5) +
   scale_shape_manual(values = c('Public'=15, 'Semi-Private'=17, 'Private'=16))
 
