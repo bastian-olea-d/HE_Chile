@@ -440,7 +440,7 @@ Fig_7 <- ggplot(as.data.frame(Alluvial),
   geom_stratum(width = 1/12, fill = "black", color = "grey") +
   geom_label(stat = "stratum", aes(label = after_stat(stratum))) +
   scale_x_discrete(limits = c("Dependence","Institution"), expand = c(.05, .05)) +
-  scale_fill_brewer(type = "qual", palette = "Set1") + labs(y="Graduates Enrolled", fill="Dependence") +
+  scale_fill_brewer(type = "qual", palette = "Set1") + labs(y="Graduates", fill="Dependence") +
   theme_bw()+ theme(legend.position = "top",axis.title.x = element_text(size = 20, vjust = -0.5),
         axis.text.y = element_text(size=18, angle = 0),axis.title.y = element_text(size=18, angle=90), 
         axis.text.x = element_text(size=20, angle=0), legend.title=element_text(size=18, angle=0),
@@ -687,6 +687,10 @@ z
 
 p <- (1 - pnorm(abs(z), 0, 1)) * 2
 p
+
+write.csv(coeficientes, file="coef.csv")
+write.csv(p, file="p-value.csv")
+
 
 library(stats)
 logLik(m_logit)
