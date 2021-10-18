@@ -19,8 +19,8 @@ https://drive.google.com/drive/folders/1xejjXbdxpwZLbhzP9qNoVQehZs5Vdhnc?usp=sha
             Age = AGE
             HGPA = NEM
             ClassRank = PERCENTIL
-            RegRes = COD_REG_ALU
+            Region = COD_REG_ALU
             Dependence = COD_DEPE2
-            HEst = TIPO_INST_2
+            HEI = TIPO_INST_2
             Schlrp = POST_BECA
 
