@@ -311,55 +311,6 @@ ggsave("/Users/bolea/Documents/GitHub/HE_Chile/Figures/Fig_4.pdf",Fig_4, width=1
 
 ```
 
-```{r Fig: 11, echo=FALSE, fig.align="center", fig.height=5, fig.width=10, message=FALSE, warning=FALSE}
-setwd("~/Documents/GitHub/HE_Chile")
-db_final <- read_rds("BASE_PAPER.RDS")
-db_final <- db_final %>% filter(JOVEN=="1")
-db_final <- db_final %>% mutate(COD_ENSE=ifelse(COD_ENSE<400,"H-C","T-P")) #%>% filter(COD_ENSE=="H-C")
-names(db_final) <- toupper(names(db_final))
-db_final <- db_final %>% mutate(AGNO_EGRESO = AGNO_EGRESO+1,
-                                PERCENTIL = ifelse(PERCENTIL<=50, "ClassRank 1-50%","ClassRank 51-100%" ))
-
-colegios <- db_final %>% group_by(AGNO_EGRESO, COD_DEPE2,PERCENTIL,MATRICULADO) %>% summarise(N=n())
-
-table(colegios$PERCENTIL)
-colegios = dcast(colegios,AGNO_EGRESO + COD_DEPE2 + PERCENTIL ~ MATRICULADO)
-names(colegios)[4] = "No_Matriculado";names(colegios)[5] = "Matriculado"
-
-colegios <- colegios %>% mutate(across(everything(), .fns = ~replace_na(.,0)))
-colegios <- colegios %>% ungroup() %>% mutate(Tasa = (Matriculado)/(No_Matriculado+Matriculado)*100)
-
-colegios <- colegios %>% mutate(COD_DEPE2 = ifelse(COD_DEPE2=="Municipal","Public",
-                                                     ifelse(COD_DEPE2=="P.Pag", "Private",
-                                                            ifelse(COD_DEPE2=="P.Sub","Semi-Private",COD_DEPE2))))
-
-colegios <- colegios %>% ungroup() %>% mutate(Porc = paste0(round(Tasa,1),"%"))
-colegios <- colegios %>%  mutate(COD_DEPE2 = factor(COD_DEPE2, levels=c("Public", "Semi-Private", "Private")))
-
-Fig_11 = ggplot(colegios, aes(x=AGNO_EGRESO, y=Tasa, group=factor(COD_DEPE2))) +
-  geom_line(linetype = "3313")+
-  geom_point(aes(shape=factor(COD_DEPE2)), size=3)+ 
-  labs(x="Admission Process", y="Enrolment Rate", shape="Dependence") +
-  coord_cartesian(xlim = c(2008,2020.6), ylim = c(15,92))+
-  scale_x_continuous(breaks = seq(2007,2020,1)) + 
-  scale_y_continuous(breaks = seq(0,90,10), sec.axis = dup_axis()) + 
-  theme_bw() +
-  theme(plot.title = element_text(size = 12, face = "bold"),legend.title=element_text(size=16, angle=0),
-        legend.text=element_text(size=14, angle = 0),axis.title.x = element_text(size = 18, vjust = -0.5), 
-        axis.text.y = element_text(size=12, angle = 0),axis.title.y = element_text(size=18, angle=90), 
-        axis.text.x = element_text(size=14, angle=90), axis.title.y.right = element_blank(), strip.text = element_text(size = 16),
-        legend.position="top") +
-  #geom_text(aes(label = Porc), vjust= -0.9, hjust = 0, size = 2, color="black", check_overlap = TRUE, nudge_y = 0.5) + 
-  facet_rep_wrap(~PERCENTIL, nrow=1,repeat.tick.labels = T) +
-  scale_shape_manual(values = c('Public'=15, 'Semi-Private'=17, 'Private'=16))
-  
-Fig_11
-
-ggsave("/Users/bolea/Documents/GitHub/HE_Chile/Figures/Fig_11.eps",Fig_11, width=10.16, height=7.45, limitsize = FALSE)
-ggsave("/Users/bolea/Documents/GitHub/HE_Chile/Figures/Fig_11.pdf",Fig_11, width=10.16, height=7.45, limitsize = FALSE)
-
-```
-
 ```{r Fig: 6, echo=FALSE, fig.align="center", fig.height=5, fig.width=10, message=FALSE, warning=FALSE}
 setwd("~/Documents/GitHub/HE_Chile")
 db_final <- read_rds("BASE_PAPER.RDS")
@@ -454,7 +405,7 @@ ggsave("/Users/bolea/Documents/GitHub/HE_Chile/Figures/Fig_7.pdf",Fig_7, width=1
 
 ```
 
-```{r Case of Schools - Fig: 8, 9, 10, 12, 13 and 14, echo=FALSE, fig.align="center", fig.height=8, fig.width=12, message=FALSE, warning=FALSE}
+```{r Case of Schools - Fig: 8, 9, 10, echo=FALSE, fig.align="center", fig.height=8, fig.width=12, message=FALSE, warning=FALSE}
 library(rpart)
 library(dplyr)
 library(readr)
@@ -567,66 +518,9 @@ Fig_10
 ggsave("/Users/bolea/Documents/GitHub/HE_Chile/Figures/Fig_10.eps",Fig_10, width=10.16, height=7.45, limitsize = FALSE)
 ggsave("/Users/bolea/Documents/GitHub/HE_Chile/Figures/Fig_10.pdf",Fig_10, width=10.16, height=7.45, limitsize = FALSE)
 
-# fig 15 ------------------------------------------------------------------
-
-Base_Colegios_Hist=Base_Colegios %>% mutate(AGNO_EGRESO=AGNO_EGRESO %>% as.numeric() + 2007)
-
-ggplot(Base_Colegios_Hist %>% filter(COD_DEPE2=="Public"), aes(TASA)) +
-  facet_wrap(~AGNO_EGRESO,ncol=4) +
-  labs(x="Enrolment rate",y="Density") +
-  ggtitle("Public High School") + 
-  geom_histogram(color="black",fill="grey",alpha=0.3) + 
-  theme_clean() +
-  theme(legend.position="top",
-        axis.title.y.right = element_blank(),
-        plot.title = element_text(size = 18, face = "bold",hjust = 0.5),
-        legend.title=element_text(size=16, angle=0),
-        legend.text=element_text(size=14, angle = 0),
-        axis.title.x = element_text(size = 18, vjust=-0.5),
-        axis.text.y = element_text(size=15, angle = 0),
-        axis.title.y = element_text(size=18, angle=90),
-        axis.text.x = element_text(size=14, angle=90))
-
-# fig 16 ------------------------------------------------------------------
-  
-ggplot(Base_Colegios_Hist %>% filter(COD_DEPE2=="Semi-Private"), aes(TASA)) +
-  facet_wrap(~AGNO_EGRESO,ncol=4) +
-  labs(x="Enrolment rate",y="Density") +
-  ggtitle("Semi-Private High School") + 
-  geom_histogram(color="black",fill="grey",alpha=0.3) + 
-  theme_clean() +
-  theme(legend.position="top",
-        axis.title.y.right = element_blank(),
-        plot.title = element_text(size = 18, face = "bold",hjust = 0.5),
-        legend.title=element_text(size=16, angle=0),
-        legend.text=element_text(size=14, angle = 0),
-        axis.title.x = element_text(size = 18, vjust=-0.5),
-        axis.text.y = element_text(size=15, angle = 0),
-        axis.title.y = element_text(size=18, angle=90),
-        axis.text.x = element_text(size=14, angle=90))
-
-# fig 17 ------------------------------------------------------------------
-
-ggplot(Base_Colegios_Hist %>% filter(COD_DEPE2=="Private"), aes(TASA)) +
-  facet_wrap(~AGNO_EGRESO,ncol=4) +
-  labs(x="Enrolment rate",y="Density") +
-  ggtitle("Private High School") + 
-  geom_histogram(color="black",fill="grey",alpha=0.3) + 
-  theme_clean() +
-  theme(legend.position="top",
-        axis.title.y.right = element_blank(),
-        plot.title = element_text(size = 18, face = "bold",hjust = 0.5),
-        legend.title=element_text(size=16, angle=0),
-        legend.text=element_text(size=14, angle = 0),
-        axis.title.x = element_text(size = 18, vjust=-0.5),
-        axis.text.y = element_text(size=15, angle = 0),
-        axis.title.y = element_text(size=18, angle=90),
-        axis.text.x = element_text(size=14, angle=90))
-
-
 ```
 
-```{r Individual Multinomial Logit, echo=FALSE, fig.align="center", fig.height=8, fig.width=15, message=FALSE, warning=FALSE}
+```{r Multinomial Logit, echo=FALSE, fig.align="center", fig.height=8, fig.width=15, message=FALSE, warning=FALSE}
 reg <- read_rds("BASE_PAPER.RDS")
 reg <- reg %>% rename(NOMBRE_REGION=nombre_region, NOMBRE_COMUNA=nombre_comuna)
 
