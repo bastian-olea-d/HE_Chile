@@ -665,17 +665,17 @@ require(reshape2)
 reg <- within(reg, ESTADO <- relevel(ESTADO, ref = "No Matriculado"))
 reg = reg %>% filter(EDAD %in% c('16','17','18','19'))
 reg <- within(reg, COD_DEPE2 <- relevel(COD_DEPE2, ref = "Municipal"))
+reg$NOMBRE_REGION = factor(reg$NOMBRE_REGION)
+reg <- within(reg, NOMBRE_REGION <- relevel(NOMBRE_REGION, ref = "METROPOLITANA DE SANTIAGO"))
 
-m_logit <- multinom(ESTADO ~ EDAD  + NEM + GEN_ALU + 
-                 COD_DEPE2 + factor(PostBeca) + factor(PERCENTIL) + factor(NOMBRE_REGION) + AGNO_EGRESO, data = reg)
+
+m_logit <- multinom(ESTADO ~ EDAD  + NEM + GEN_ALU + COD_DEPE2 + factor(PostBeca) + factor(NOMBRE_REGION), data = reg)
 
 coeficientes = coef(m_logit)
 
 #Coeficientes of the table.
 #command Summary takes too long
-
-View(coeficientes)
-
+View(t(coeficientes))
 
 #Performance of the model:
 library(performance)
@@ -688,8 +688,8 @@ z
 p <- (1 - pnorm(abs(z), 0, 1)) * 2
 p
 
-write.csv(coeficientes, file="coef.csv")
-write.csv(p, file="p-value.csv")
+write.csv(t(coeficientes), file="coef.csv")
+write.csv(t(p), file="p-value.csv")
 
 
 library(stats)
@@ -701,115 +701,6 @@ pseudo.R2
 lmtest::lrtest(m_logit)
 
 
-
-```
-
-```{r Extra: Mosaic Region-Dependence, echo=FALSE, fig.height=7, fig.width=15, message=FALSE, warning=FALSE}
-Data <- read_rds("BASE_PAPER.RDS")
-Data <- Data %>% filter(JOVEN=="1")
-Data <- Data %>% rename(COD_REG_ALU=codigo_region,Region=nombre_region)
-
-df <- Data %>% filter(!is.na(COD_REG_ALU)) %>% filter(COD_REG_ALU>0) 
-
-df <- df %>%
-  group_by(Region,COD_REG_ALU,COD_DEPE2) %>%
-  summarise(count = n()) %>%
-  mutate(Region.count = sum(count),
-         prop = count/sum(count)) %>%
-  ungroup()
-
-#df$TIPO_INST_3[is.na(df$TIPO_INST_3)]="No Matriculado"
-#df <- df %>% arrange(COD_REG_ALU)
-df$COD_REG_ALU[df$COD_REG_ALU==15]=0.5
-df$COD_REG_ALU[df$COD_REG_ALU==16]=7.5
-df$COD_REG_ALU[df$COD_REG_ALU==14]=9.5
-df$COD_REG_ALU[df$COD_REG_ALU==13]=5.5
-
-df <- df %>% mutate(Region = ifelse(Region=="METROPOLITANA DE SANTIAGO", "RM",
-                                  ifelse(Region=="VALPARAISO","VALPO",
-                                         ifelse(Region =="BIOBIO", "BBIO",
-                                                ifelse(Region=="LA ARAUCANIA", "ARAUC",
-                                                       ifelse(Region=="LIBERTADOR GENERAL BERNARDO O'HIGGINS", "LGBO",
-                                                              ifelse(Region=="LOS LAGOS","LAGOS",
-                                                                     ifelse(Region=="COQUIMBO", "COQ",
-                                                                            ifelse(Region=="ANTOFAGASTA","ANTOF",
-                                                                                   ifelse(Region=="LOS RIOS", "RIOS",
-                                                                                          ifelse(Region=="TARAPACA", "TPCA",
-                                                                                                 ifelse(Region=="ATACAMA","ATCMA",
-                                                                                                        ifelse(Region =="ARICA Y PARINACOTA", "AYP",
-                                                                                                               ifelse(Region=="MAGALLANES Y DE LA ANTARTICA CHILENA","MAG", ifelse(Region=="AYSEN DEL GENERAL CARLOS IBANEZ DEL CAMPO", "AYSEN", Region)))))))))))))))
-
-df <- df %>% mutate(COD_DEPE2 = ifelse(COD_DEPE2=="Municipal","Public",
-                                                     ifelse(COD_DEPE2=="P.Pag", "Private",
-                                                            ifelse(COD_DEPE2=="P.Sub","Semi-Private",COD_DEPE2))))
-
-Fig_11=ggplot(df,
-       aes(x = reorder(Region,COD_REG_ALU), y = prop, width = Region.count, fill =COD_DEPE2 )) + labs(fill="Dependence") +
-  geom_bar(stat = "identity", position = "fill", colour = "black") +
-  geom_text(aes(label = scales::percent(prop, accuracy = 1)), position = position_stack(vjust = 0.5), size=3, angle=90) + 
-  facet_grid(~reorder(Region,COD_REG_ALU), scales = "free_x", space = "free_x") +
-  scale_fill_brewer(palette = "Pastel1") + 
-  theme_bw() + theme(strip.text.x = element_text(size = 10, colour = "black", angle = 90), 
-                     legend.position = "top", axis.text = element_blank(), 
-                     legend.text = element_text(size=14), legend.title = element_text(size=16),
-                     axis.ticks = element_blank()) + 
-  labs(y="", x="") 
-
-
-Fig_11
-
-
-ggsave("/Users/bolea/Documents/GitHub/HE_Chile/Figures/Fig_11.eps",Fig_11, width=12.16, height=7.45, limitsize = FALSE)
-ggsave("/Users/bolea/Documents/GitHub/HE_Chile/Figures/Fig_11.pdf",Fig_11, width=12.16, height=7.45, limitsize = FALSE)
-
-```
-
-```{r Extra: Rate by Region, echo=FALSE, fig.height=7, fig.width=15, message=FALSE, warning=FALSE}
-
-Data <- read_rds("BASE_PAPER.RDS")
-Data <- Data %>% filter(JOVEN=="1")
-Data <- Data %>% rename(COD_REG_ALU=codigo_region,Region=nombre_region)
- 
-#admission process = agno_egreso + 1
-
-matriculado_region <- Data %>% 
-  filter(JOVEN=="1") %>%
-  group_by(COD_REG_ALU, Region, MATRICULADO, TIPO_INST_1) %>% summarise(N=n())
-
-matriculado_region=dcast(matriculado_region,COD_REG_ALU + Region ~ TIPO_INST_1 + MATRICULADO)
-matriculado_region <- matriculado_region %>% rename(Universidades=Universidades_1 , CFT=`Centros de Formación Técnica_1` ,IP=`Institutos Profesionales_1`)
-matriculado_region <- matriculado_region %>% rename(No_Matriculados=NA_0)
-matriculado_region <- matriculado_region %>% mutate(Total_Egresados=Universidades+CFT+IP+No_Matriculados)
-matriculado_region <- matriculado_region %>% mutate(Total_Matriculados=Universidades+CFT+IP)
-matriculado_region <- matriculado_region %>% filter(!is.na(COD_REG_ALU)) %>% filter(COD_REG_ALU>0)
-matriculado_region <- matriculado_region %>% mutate(Tasa_Ingreso = Total_Matriculados/Total_Egresados*100)
-
-
-matriculado_region <- matriculado_region %>% mutate(Region = ifelse(Region=="METROPOLITANA DE SANTIAGO", "RM",
-                                  ifelse(Region=="VALPARAISO","VALPO",
-                                         ifelse(Region =="BIOBIO", "BBIO",
-                                                ifelse(Region=="LA ARAUCANIA", "ARAUC",
-                                                       ifelse(Region=="LIBERTADOR GENERAL BERNARDO O'HIGGINS", "LGBO",
-                                                              ifelse(Region=="LOS LAGOS","LAGOS",
-                                                                     ifelse(Region=="COQUIMBO", "COQ",
-                                                                            ifelse(Region=="ANTOFAGASTA","ANTOF",
-                                                                                   ifelse(Region=="LOS RIOS", "RIOS",
-                                                                                          ifelse(Region=="TARAPACA", "TPCA",
-                                                                                                 ifelse(Region=="ATACAMA","ATCMA",
-                                                                                                        ifelse(Region =="ARICA Y PARINACOTA", "AYP",
-                                                                                                               ifelse(Region=="MAGALLANES Y DE LA ANTARTICA CHILENA","MAG", ifelse(Region=="AYSEN DEL GENERAL CARLOS IBANEZ DEL CAMPO", "AYSEN", Region)))))))))))))))
-
-matriculado_region <- matriculado_region %>% rename(codigo_region=COD_REG_ALU)
-
-x = generar_regiones(mapa = chilemapas::mapa_comunas)
-x$codigo_region = as.numeric(x$codigo_region)
-x <- left_join(x, matriculado_region)
-x <- x %>% mutate(Zoom=ifelse(codigo_region<8 | codigo_region==15 | codigo_region==16 | codigo_region==13,1,0))
-
-x <- x %>% mutate(Porc = paste0(round(Tasa_Ingreso,1),"%"))
-
-bar = ggplot(data=x, aes(x=reorder(factor(Region),Tasa_Ingreso),y=Tasa_Ingreso, fill=Tasa_Ingreso))  + coord_flip() + theme_minimal() + geom_bar(stat="identity") + labs(x="Region",y="Enrolment Rate") + theme(legend.position = "none", axis.title = element_text(size=17), axis.text.y = element_text(size=14), axis.text.x = element_text(size=14)) + geom_text(aes(label = Porc), position = position_stack(vjust = 0.5), size = 5, color="black") + scale_y_continuous(expand = expansion(mult = c(0, .1)))+scale_fill_distiller(palette = "RdBu", direction=1,limits=c(40,63))
-bar
 
 ```
 
