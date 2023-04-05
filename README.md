@@ -1,4 +1,4 @@
-# Influences on the access to higher education: Visualization and modeling for Chilean data
+# The physiognomy of access to Chilean higher education: The influence of socio-political and personal factors
 
 ##### Authors: Bastian Olea-Duran, Francisco A. Segovia, Nixon Jerez-Lillo, Eduardo Alarcón-Bustamante, Danilo Alvares
 
