@@ -1,5 +1,5 @@
 ---
-title: "Influences on the access to higher education: Visualization and modeling for Chilean data"
+title: "The physiognomy of access to Chilean higher education: The influence of socio-political and personal factors"
 author: 'Bastian Olea-Duran, Francisco A. Segovia, Nixon Jerez-Lillo, Eduardo Alarcón-Bustamante, Danilo Alvares'
 date: "10/08/2021"
 output:
